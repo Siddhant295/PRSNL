@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,6 +7,9 @@ import {
     Card,
     CardContent,
 } from "@/components/ui/card";
+import axios from "axios";
+
+const API_URL = "http://localhost:5000";
 
 // Google SVG Icon
 const GoogleIcon = () => (
@@ -19,24 +22,50 @@ const GoogleIcon = () => (
 );
 
 export default function LoginPage() {
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const [isLoading, setIsLoading] = useState(false);
+    const [error, setError] = useState("");
     const [formData, setFormData] = useState({
         email: "",
         password: "",
     });
 
+    // Check for Google OAuth error in URL params
+    useEffect(() => {
+        const oauthError = searchParams.get("error");
+        if (oauthError === "oauth_failed") {
+            const detail = searchParams.get("detail");
+            setError(`Google sign-in failed${detail ? `: ${detail}` : ". Please try again."}`);
+        } else if (oauthError === "no_user") {
+            setError("Google sign-in failed: could not retrieve user info.");
+        }
+    }, [searchParams]);
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        setError("");
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsLoading(true);
-        setTimeout(() => setIsLoading(false), 1500);
+        setError("");
+
+        try {
+            const res = await axios.post(`${API_URL}/auth/login`, formData);
+            localStorage.setItem("token", res.data.token);
+            localStorage.setItem("user", JSON.stringify(res.data.user));
+            navigate("/home");
+        } catch (err) {
+            setError(err.response?.data?.message || "Login failed. Please try again.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleGoogleLogin = () => {
-        // Implement Google OAuth
+        window.location.href = `${API_URL}/auth/google`;
     };
 
     return (
@@ -48,6 +77,13 @@ export default function LoginPage() {
             <Card className="w-full max-w-[440px] border-[#eff0f1] shadow-[0_4px_24px_rgba(0,0,0,0.04)] rounded-[24px] bg-white">
                 <CardContent className="p-10">
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Error Alert */}
+                        {error && (
+                            <div className="bg-red-50 border border-red-200 text-red-700 text-[14px] px-4 py-3 rounded-[8px]">
+                                {error}
+                            </div>
+                        )}
+
                         {/* Email Field */}
                         <div className="space-y-2">
                             <Label htmlFor="email" className="text-[14px] font-semibold text-[#111827] block">Email</Label>

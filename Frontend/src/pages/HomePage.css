@@ -1,0 +1,1386 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   PRSNL Planner — Fit-to-Page with Light/Dark Support
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─── Root ──────────────────────────────────────────────────────────── */
+.hp-root {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background: hsl(var(--background));
+    color: hsl(var(--foreground));
+    overflow: hidden;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+/* ─── Top Bar ───────────────────────────────────────────────────────── */
+.hp-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 24px;
+    border-bottom: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
+    flex-shrink: 0;
+}
+
+.hp-topbar-l {
+    display: flex;
+    align-items: center;
+}
+
+.hp-logo {
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: hsl(var(--primary));
+}
+
+.hp-topbar-r {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.hp-theme-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+}
+
+.hp-user-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px 4px 4px;
+    border-radius: 40px;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--secondary));
+}
+
+.hp-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.hp-username {
+    font-size: 13px;
+    font-weight: 500;
+    color: hsl(var(--foreground));
+}
+
+.hp-logout-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+}
+
+/* ─── Toolbar ───────────────────────────────────────────────────────── */
+.hp-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    gap: 16px;
+    flex-shrink: 0;
+}
+
+/* Tabs */
+.hp-tabs {
+    display: flex;
+    padding: 3px;
+    border-radius: 10px;
+    background: hsl(var(--secondary));
+    border: 1px solid hsl(var(--border));
+    gap: 2px;
+}
+
+.hp-tab {
+    padding: 6px 18px;
+    border-radius: 8px;
+    border: none;
+    background: transparent;
+    color: hsl(var(--muted-foreground));
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+
+.hp-tab:hover {
+    color: hsl(var(--foreground));
+    background: hsl(var(--background));
+}
+
+.hp-tab-active {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 2px 8px hsl(var(--primary) / 0.3);
+}
+
+.hp-tab-active:hover {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+}
+
+/* Nav */
+.hp-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hp-nav-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
+    color: hsl(var(--muted-foreground));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.hp-nav-btn:hover {
+    background: hsl(var(--secondary));
+    color: hsl(var(--foreground));
+}
+
+.hp-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: hsl(var(--foreground));
+    min-width: 180px;
+    text-align: center;
+    white-space: nowrap;
+    margin: 0;
+}
+
+.hp-today-btn {
+    font-weight: 600;
+    font-family: inherit;
+}
+
+/* ─── Calendar Card (fills remaining space) ─────────────────────────── */
+.hp-card {
+    flex: 1;
+    margin: 0 24px 20px;
+    border-radius: 16px !important;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    position: relative;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   MONTHLY VIEW — page-fitted
+   ═══════════════════════════════════════════════════════════════════════════ */
+.hp-monthly {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 20px 20px;
+    min-height: 0;
+}
+
+.hp-month-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+}
+
+.hp-day-headers {
+    flex-shrink: 0;
+    margin-bottom: 4px;
+}
+
+.hp-day-header {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: hsl(var(--muted-foreground));
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 6px 0;
+}
+
+.hp-day-cells {
+    flex: 1;
+    align-content: stretch;
+    min-height: 0;
+}
+
+.hp-day-cell {
+    border-radius: 10px;
+    border: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    min-height: 0;
+    position: relative;
+}
+
+.hp-day-num {
+    line-height: 1;
+}
+
+.hp-task-dots {
+    display: flex;
+    gap: 3px;
+}
+
+.hp-task-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: hsl(var(--primary));
+    opacity: 0.7;
+}
+
+.hp-day-cell.hp-today .hp-task-dot {
+    background: hsl(var(--primary-foreground));
+    opacity: 0.8;
+}
+
+.hp-day-cell.hp-empty {
+    border: none;
+    background: transparent;
+    cursor: default;
+}
+
+.hp-day-cell:not(.hp-empty):hover {
+    background: hsl(var(--primary) / 0.08);
+    border-color: hsl(var(--primary) / 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 12px hsl(var(--primary) / 0.1);
+}
+
+.hp-day-cell.hp-past {
+    opacity: 0.4;
+}
+
+.hp-day-cell.hp-past:hover {
+    opacity: 0.7;
+}
+
+.hp-day-cell.hp-today {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    border-color: hsl(var(--primary));
+    font-weight: 800;
+    box-shadow: 0 3px 12px hsl(var(--primary) / 0.3);
+    opacity: 1;
+}
+
+.hp-day-cell.hp-today:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 5px 18px hsl(var(--primary) / 0.4);
+}
+
+.hp-day-cell.hp-selected:not(.hp-today) {
+    background: hsl(var(--primary) / 0.12);
+    border-color: hsl(var(--primary) / 0.5);
+    color: hsl(var(--primary));
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   WEEKLY VIEW — task columns (no time grid)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.hp-weekly {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.hp-week-cols {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    min-height: 0;
+    overflow: hidden;
+}
+
+.hp-week-col {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    border-right: 1px solid hsl(var(--border) / 0.4);
+}
+
+.hp-week-col:last-child {
+    border-right: none;
+}
+
+.hp-week-col-today {
+    background: hsl(var(--primary) / 0.03);
+}
+
+.hp-week-day-h {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 10px 4px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: inherit;
+    border-bottom: 1px solid hsl(var(--border));
+    flex-shrink: 0;
+}
+
+.hp-week-day-h:hover {
+    background: hsl(var(--secondary));
+}
+
+.hp-wdn {
+    font-size: 10px;
+    font-weight: 700;
+    color: hsl(var(--muted-foreground));
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.hp-wdd {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    transition: all 0.15s ease;
+}
+
+.hp-today-num {
+    background: hsl(var(--primary));
+    color: hsl(var(--primary-foreground));
+    box-shadow: 0 2px 8px hsl(var(--primary) / 0.3);
+}
+
+.hp-week-day-h.hp-today .hp-wdn {
+    color: hsl(var(--primary));
+}
+
+/* Tasks inside weekly columns */
+.hp-week-tasks {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.hp-week-tasks::-webkit-scrollbar {
+    width: 3px;
+}
+
+.hp-week-tasks::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 2px;
+}
+
+/* Single task item in weekly column */
+.hp-wt-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 6px;
+    border-radius: 6px;
+    font-size: 11px;
+    background: hsl(var(--secondary) / 0.5);
+    border: 1px solid hsl(var(--border) / 0.4);
+    transition: background 0.1s ease;
+    cursor: default;
+}
+
+.hp-wt-item:hover {
+    background: hsl(var(--secondary));
+}
+
+.hp-wt-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.hp-wt-dot-todo {
+    background: hsl(var(--muted-foreground));
+    opacity: 0.35;
+}
+
+.hp-wt-dot-progress {
+    background: #f59e0b;
+}
+
+.hp-wt-dot-completed {
+    background: #22c55e;
+}
+
+.hp-wt-text {
+    flex: 1;
+    font-weight: 500;
+    color: hsl(var(--foreground));
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.3;
+}
+
+.hp-wt-completed .hp-wt-text {
+    text-decoration: line-through;
+    opacity: 0.4;
+}
+
+.hp-wt-time {
+    font-size: 9px;
+    font-weight: 600;
+    color: hsl(var(--primary));
+    background: hsl(var(--primary) / 0.08);
+    padding: 1px 5px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.hp-wt-clock-btn {
+    width: 18px;
+    height: 18px;
+    border-radius: 4px;
+    border: none;
+    background: transparent;
+    color: hsl(var(--muted-foreground));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.15s ease;
+    flex-shrink: 0;
+}
+
+.hp-wt-item:hover .hp-wt-clock-btn {
+    opacity: 0.7;
+}
+
+.hp-wt-clock-btn:hover {
+    opacity: 1 !important;
+    color: hsl(var(--primary));
+    background: hsl(var(--primary) / 0.1);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TODAY VIEW — big task cards (no timeline)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.hp-today-view {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 20px;
+    min-height: 0;
+    gap: 14px;
+}
+
+.hp-today-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: hsl(var(--primary) / 0.06);
+    border: 1px solid hsl(var(--primary) / 0.12);
+    flex-shrink: 0;
+}
+
+.hp-today-banner-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hp-today-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: hsl(var(--primary));
+    box-shadow: 0 0 12px hsl(var(--primary) / 0.4);
+    animation: hp-pulse 2s ease-in-out infinite;
+}
+
+@keyframes hp-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: scale(0.85);
+    }
+}
+
+.hp-today-day {
+    font-size: 15px;
+    font-weight: 700;
+    color: hsl(var(--foreground));
+}
+
+.hp-today-date {
+    font-size: 12px;
+    color: hsl(var(--muted-foreground));
+    margin-top: 1px;
+}
+
+.hp-today-stats {
+    color: hsl(var(--primary));
+    font-weight: 600;
+}
+
+/* Add task bar */
+.hp-today-add-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.hp-today-add-input {
+    flex: 1;
+    height: 42px !important;
+    font-size: 14px !important;
+    border-radius: 10px !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+.hp-today-add-btn {
+    flex-shrink: 0;
+    gap: 6px;
+    height: 42px !important;
+    padding: 0 18px !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+}
+
+/* Task list */
+.hp-today-task-list {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 0;
+}
+
+.hp-today-task-list::-webkit-scrollbar {
+    width: 5px;
+}
+
+.hp-today-task-list::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+}
+
+/* Individual task card */
+.hp-tv-task {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    border-radius: 12px;
+    background: hsl(var(--secondary) / 0.4);
+    border: 1px solid hsl(var(--border) / 0.5);
+    transition: all 0.15s ease;
+}
+
+.hp-tv-task:hover {
+    background: hsl(var(--secondary) / 0.7);
+    border-color: hsl(var(--border));
+}
+
+/* Status dot */
+.hp-tv-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.hp-tv-dot-todo {
+    background: hsl(var(--muted-foreground));
+    opacity: 0.3;
+}
+
+.hp-tv-dot-progress {
+    background: #f59e0b;
+    box-shadow: 0 0 6px rgba(245, 158, 11, 0.4);
+    animation: hp-pulse 2s ease-in-out infinite;
+}
+
+.hp-tv-dot-completed {
+    background: #22c55e;
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.3);
+}
+
+/* Task text — inline, takes remaining space */
+.hp-tv-text {
+    flex: 1;
+    font-size: 15px;
+    font-weight: 600;
+    color: hsl(var(--foreground));
+    line-height: 1.4;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hp-tv-completed .hp-tv-text {
+    text-decoration: line-through;
+    opacity: 0.4;
+}
+
+/* Time badge — inline on the right */
+.hp-tv-time {
+    font-size: 11px;
+    font-weight: 600;
+    color: hsl(var(--primary));
+    background: hsl(var(--primary) / 0.08);
+    padding: 3px 8px;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* Clock button for untimed tasks */
+.hp-tv-clock-btn {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 8px !important;
+    color: hsl(var(--muted-foreground)) !important;
+    opacity: 0;
+    transition: all 0.15s ease !important;
+    flex-shrink: 0;
+}
+
+.hp-tv-task:hover .hp-tv-clock-btn {
+    opacity: 0.7;
+}
+
+.hp-tv-clock-btn:hover {
+    opacity: 1 !important;
+    color: hsl(var(--primary)) !important;
+    background: hsl(var(--primary) / 0.08) !important;
+}
+
+/* Action buttons */
+.hp-tv-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.hp-tv-act {
+    width: 30px !important;
+    height: 30px !important;
+    border-radius: 8px !important;
+    padding: 0 !important;
+    color: hsl(var(--muted-foreground)) !important;
+    opacity: 0.4;
+    transition: all 0.15s ease !important;
+}
+
+.hp-tv-task:hover .hp-tv-act {
+    opacity: 1;
+}
+
+.hp-tv-act-check:hover {
+    color: #22c55e !important;
+    background: rgba(34, 197, 94, 0.1) !important;
+}
+
+.hp-tv-act-active-green {
+    color: #fff !important;
+    background: #22c55e !important;
+    opacity: 1 !important;
+}
+
+.hp-tv-act-prog:hover {
+    color: #f59e0b !important;
+    background: rgba(245, 158, 11, 0.1) !important;
+}
+
+.hp-tv-act-active-amber {
+    color: #fff !important;
+    background: #f59e0b !important;
+    opacity: 1 !important;
+}
+
+.hp-tv-act-del:hover {
+    color: hsl(var(--destructive)) !important;
+    background: hsl(var(--destructive) / 0.1) !important;
+}
+
+/* DTP time badge */
+.dtp-time-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: hsl(var(--primary));
+    background: hsl(var(--primary) / 0.08);
+    padding: 2px 8px;
+    border-radius: 6px;
+    flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   DATE TASK PANEL (overlay) — Large with gradient header
+   ═══════════════════════════════════════════════════════════════════════════ */
+.dtp-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 50;
+    border-radius: inherit;
+    animation: dtp-fade-in 0.2s ease;
+    backdrop-filter: blur(2px);
+}
+
+.dark .dtp-backdrop {
+    background: rgba(0, 0, 0, 0.55);
+}
+
+@keyframes dtp-fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.dtp-panel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 520px;
+    max-width: calc(100% - 32px);
+    max-height: calc(100% - 24px);
+    background: hsl(var(--card));
+    border-radius: 20px;
+    z-index: 51;
+    display: flex;
+    flex-direction: column;
+    box-shadow:
+        0 25px 80px rgba(0, 0, 0, 0.18),
+        0 8px 24px rgba(0, 0, 0, 0.1);
+    animation: dtp-slide-in 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+    font-family: 'Inter', sans-serif;
+}
+
+.dark .dtp-panel {
+    box-shadow:
+        0 25px 80px rgba(0, 0, 0, 0.5),
+        0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes dtp-slide-in {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -46%) scale(0.94);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+/* ─── Gradient Header ─────────────────────────────────────────────── */
+.dtp-header {
+    background: linear-gradient(135deg, #ef233c 0%, #d90429 30%, #ef233c 65%, #f45d6e 100%);
+    padding: 0;
+    flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle decorative circle (like the reference image) */
+.dtp-header::after {
+    content: '';
+    position: absolute;
+    right: -30px;
+    top: -20px;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 18px solid rgba(255, 255, 255, 0.1);
+    pointer-events: none;
+}
+
+.dtp-header-content {
+    position: relative;
+    z-index: 1;
+    padding: 20px 24px 18px;
+}
+
+.dtp-header-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.dtp-header-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(4px);
+    font-size: 12px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.02em;
+}
+
+.dtp-close-btn {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 50% !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    color: #fff !important;
+    border: none !important;
+}
+
+.dtp-close-btn:hover {
+    background: rgba(255, 255, 255, 0.3) !important;
+}
+
+.dtp-header-date {
+    font-size: 28px;
+    font-weight: 900;
+    color: #fff;
+    line-height: 1.1;
+    margin: 0;
+    letter-spacing: -0.02em;
+}
+
+.dtp-header-year {
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 2px 0 0;
+}
+
+.dtp-header-count {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 8px 0 0;
+}
+
+/* ─── Task list ───────────────────────────────────────────────────── */
+.dtp-tasks {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+    min-height: 100px;
+    max-height: 320px;
+}
+
+.dtp-tasks::-webkit-scrollbar {
+    width: 5px;
+}
+
+.dtp-tasks::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.dtp-tasks::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 3px;
+}
+
+/* Individual task row */
+.dtp-task {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 24px;
+    transition: background 0.12s ease;
+}
+
+.dtp-task:hover {
+    background: hsl(var(--secondary) / 0.5);
+}
+
+/* Status indicator dot */
+.dtp-status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: all 0.15s ease;
+}
+
+.dtp-si-todo {
+    background: hsl(var(--muted-foreground));
+    opacity: 0.35;
+}
+
+.dtp-si-progress {
+    background: #f59e0b;
+    box-shadow: 0 0 6px rgba(245, 158, 11, 0.4);
+    animation: hp-pulse 2s ease-in-out infinite;
+}
+
+.dtp-si-completed {
+    background: #22c55e;
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.3);
+}
+
+.dtp-task-text {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 500;
+    color: hsl(var(--foreground));
+    line-height: 1.4;
+}
+
+.dtp-task-completed .dtp-task-text {
+    text-decoration: line-through;
+    opacity: 0.4;
+}
+
+/* Action buttons container */
+.dtp-actions {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+
+.dtp-action-btn {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 6px !important;
+    padding: 0 !important;
+    color: hsl(var(--muted-foreground)) !important;
+    opacity: 0.5;
+    transition: all 0.15s ease !important;
+}
+
+.dtp-task:hover .dtp-action-btn {
+    opacity: 1;
+}
+
+/* Completed button */
+.dtp-act-complete:hover {
+    color: #22c55e !important;
+    background: rgba(34, 197, 94, 0.1) !important;
+}
+
+.dtp-act-complete.dtp-act-active {
+    color: #fff !important;
+    background: #22c55e !important;
+    opacity: 1;
+}
+
+/* In-progress button */
+.dtp-act-progress:hover {
+    color: #f59e0b !important;
+    background: rgba(245, 158, 11, 0.1) !important;
+}
+
+.dtp-act-progress.dtp-act-active {
+    color: #fff !important;
+    background: #f59e0b !important;
+    opacity: 1;
+}
+
+/* Delete button */
+.dtp-act-delete:hover {
+    color: hsl(var(--destructive)) !important;
+    background: hsl(var(--destructive) / 0.1) !important;
+}
+
+/* ─── Add task input ──────────────────────────────────────────────── */
+.dtp-add {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 20px;
+    border-top: 1px solid hsl(var(--border));
+    flex-shrink: 0;
+}
+
+.dtp-input {
+    flex: 1;
+    height: 42px !important;
+    font-size: 14px !important;
+    border-radius: 10px !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+.dtp-add-btn {
+    flex-shrink: 0;
+    gap: 6px;
+    height: 42px !important;
+    padding: 0 18px !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    font-family: 'Inter', sans-serif !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TODAY VIEW — task strips & inline add
+   ═══════════════════════════════════════════════════════════════════════════ */
+.hp-today-add-inline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hp-today-input {
+    width: 200px;
+    height: 36px !important;
+    font-size: 13px !important;
+    border-radius: 8px !important;
+}
+
+.hp-today-tasks-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 0 10px;
+    flex-shrink: 0;
+}
+
+.hp-today-task-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 8px;
+    background: hsl(var(--primary) / 0.08);
+    border: 1px solid hsl(var(--primary) / 0.15);
+    font-size: 12px;
+    font-weight: 500;
+    color: hsl(var(--foreground));
+}
+
+.hp-chip-done {
+    opacity: 0.45;
+    text-decoration: line-through;
+}
+
+.hp-chip-bullet {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: hsl(var(--primary));
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   Responsive
+   ═══════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+    .hp-topbar {
+        padding: 8px 14px;
+    }
+
+    .hp-toolbar {
+        flex-direction: column;
+        padding: 8px 14px;
+        gap: 8px;
+    }
+
+    .hp-card {
+        margin: 0 14px 14px;
+    }
+
+    .hp-tabs {
+        width: 100%;
+    }
+
+    .hp-tab {
+        flex: 1;
+        text-align: center;
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+
+    .hp-title {
+        font-size: 14px;
+        min-width: auto;
+    }
+
+    .hp-monthly {
+        padding: 10px 12px 14px;
+    }
+
+    .hp-month-grid {
+        gap: 4px;
+    }
+
+    .hp-day-cell {
+        font-size: 11px;
+        border-radius: 6px;
+    }
+
+    .hp-username {
+        display: none;
+    }
+
+    .hp-week-cols {
+        grid-template-columns: repeat(7, 1fr);
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   TIME PICKER (shadcn Dialog)
+   ═══════════════════════════════════════════════════════════════════════════ */
+.tp-dialog {
+    max-width: 360px !important;
+    border-radius: 16px !important;
+    padding: 24px !important;
+    gap: 16px !important;
+}
+
+.tp-dialog-title {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+}
+
+.tp-dialog-title svg {
+    color: hsl(var(--primary));
+}
+
+.tp-dialog-desc {
+    font-size: 13px !important;
+    color: hsl(var(--muted-foreground)) !important;
+}
+
+/* Large time preview */
+.tp-preview {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 0 4px;
+}
+
+.tp-preview-time {
+    font-size: 48px;
+    font-weight: 900;
+    font-family: 'Inter', sans-serif;
+    color: hsl(var(--foreground));
+    letter-spacing: -0.02em;
+    line-height: 1;
+}
+
+.tp-preview-ampm {
+    font-size: 18px;
+    font-weight: 700;
+    color: hsl(var(--primary));
+    line-height: 1;
+}
+
+/* Column layout */
+.tp-columns {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 4px;
+}
+
+.tp-col-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.tp-col-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: hsl(var(--muted-foreground));
+}
+
+/* Scrollable column */
+.tp-scroll-col {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    max-height: 160px;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    padding: 4px;
+    border-radius: 10px;
+    background: hsl(var(--secondary) / 0.3);
+    border: 1px solid hsl(var(--border) / 0.4);
+}
+
+.tp-scroll-col::-webkit-scrollbar {
+    width: 3px;
+}
+
+.tp-scroll-col::-webkit-scrollbar-thumb {
+    background: hsl(var(--border));
+    border-radius: 2px;
+}
+
+/* Each item in scroll */
+.tp-item {
+    width: 52px;
+    height: 38px;
+    border-radius: 8px;
+    border: 1px solid transparent;
+    background: transparent;
+    color: hsl(var(--foreground));
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.12s ease;
+    scroll-snap-align: center;
+    flex-shrink: 0;
+}
+
+.tp-item:hover {
+    background: hsl(var(--secondary));
+    border-color: hsl(var(--border));
+}
+
+.tp-item-active {
+    background: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+    border-color: hsl(var(--primary)) !important;
+    box-shadow: 0 2px 8px hsl(var(--primary) / 0.25);
+    font-weight: 800;
+}
+
+/* Separator colon */
+.tp-sep {
+    font-size: 28px;
+    font-weight: 800;
+    color: hsl(var(--muted-foreground));
+    padding-top: 28px;
+    user-select: none;
+}
+
+/* AM/PM column */
+.tp-col-ampm {
+    margin-left: 8px;
+}
+
+.tp-ampm-btns {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tp-ampm-btn {
+    width: 52px !important;
+    height: 38px !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    border-radius: 8px !important;
+}
+
+/* Footer */
+.tp-footer {
+    gap: 8px;
+    padding-top: 8px;
+}
+
+/* Clock toggle button in add bars */
+.dtp-clock-toggle,
+.hp-tv-add-clock {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 8px !important;
+    color: hsl(var(--muted-foreground)) !important;
+    transition: all 0.15s ease !important;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.dtp-clock-toggle:hover,
+.hp-tv-add-clock:hover {
+    color: hsl(var(--primary)) !important;
+    background: hsl(var(--primary) / 0.08) !important;
+}
+
+.dtp-clock-active,
+.hp-tv-add-clock-active {
+    color: hsl(var(--primary)) !important;
+}
+
+.dtp-clock-dot {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: hsl(var(--primary));
+}
+
+/* Always show clock on today view tasks */
+.hp-tv-clock-btn {
+    opacity: 0.5 !important;
+}
+
+.hp-tv-task:hover .hp-tv-clock-btn {
+    opacity: 1 !important;
+}
